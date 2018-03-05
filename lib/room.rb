@@ -3,10 +3,10 @@ module Hotel
 
     attr_reader :room_reservations , :status, :room_id
 
-    def initialize
-      @room_id = 1
+    def initialize(id)
+      @room_id = id
       @room_reservations = [] #get_reservations_in_room == nil ? [] : get_reservations_in_room
-      @status = available? ? :AVAILABLE  : :UNAVAILABLE 
+      @status = available? ? :AVAILABLE  : :UNAVAILABLE
     end
 
     def available?

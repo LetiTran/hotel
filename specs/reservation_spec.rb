@@ -4,7 +4,7 @@ describe 'Reservation' do
   describe 'initialize' do
     before do
       @manager = Hotel::Manager.new
-      @reservation = Hotel::Reservation.new
+      @reservation = Hotel::Reservation.new('3rd Feb 2019', '5 Feb 2019')
     end
 
     it "can be created" do
@@ -25,6 +25,49 @@ describe 'Reservation' do
     it 'has a room' do
       @reservation.must_respond_to :room
       # @reservation.reservation_reservations.must_be_kind_of Hotel::Room
+    end
+
+    it 'has start and end dates' do
+      @reservation.must_respond_to :start_date
+      @reservation.start_date.must_be_kind_of Date
+
+      @reservation.must_respond_to :end_date
+      @reservation.end_date.must_be_kind_of Date
+    end
+
+    it 'has a cost' do
+      @reservation.must_respond_to :cost
+      @reservation.cost.must_equal 400
+    end
+
+    it 'has a status' do
+      @reservation.must_respond_to :status
+      @reservation.status.must_equal :OPEN
+
+      reservation2 = Hotel::Reservation.new('3rd Feb 2018', '5 Feb 2018')
+      reservation2.status.must_equal :CLOSED
+    end
+
+  end
+
+  describe '#num_of_nights' do
+    it 'calculates the number of nights' do
+      reservation = Hotel::Reservation.new('3rd Feb 2018', '5 Feb 2018')
+      reservation.num_of_nights.must_equal 2
+      reservation.num_of_nights.must_be_kind_of Integer
+    end
+  end
+
+  describe '#calculate_cost' do
+    it 'calculates the cost of the stay' do
+      reservation = Hotel::Reservation.new('3rd Feb 2018', '5 Feb 2018')
+      reservation.calculate_cost.must_equal 2 * 200
+      reservation.calculate_cost.must_be_kind_of Integer
+    end
+  end
+
+  describe '#select_room' do
+    it 'selects an avilable room' do
     end
   end
 end

@@ -4,7 +4,7 @@ describe 'Manager' do
   describe 'initialize' do
     before do
       @manager = Hotel::Manager.new
-      @room = Hotel::Room.new
+      @room = Hotel::Room.new(1)
     end
     it "can be created" do
       @manager.must_be_kind_of Hotel::Manager

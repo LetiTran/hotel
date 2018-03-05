@@ -3,11 +3,17 @@ module Hotel
     attr_reader :all_rooms, :all_reservations
 
     def initialize
-      @all_rooms = Array.new(20)
+      @all_rooms = initialize_all_rooms
       @all_reservations = Array.new
     end
-    def all_reservations
-      return [1, 2]
+
+    def initialize_all_rooms
+      all_rooms = []
+      20.times {|i| all_rooms << Hotel::Room.new(i + 1)}
+      return all_rooms
     end
+
+
+
   end
 end
