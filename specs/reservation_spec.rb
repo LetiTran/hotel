@@ -4,7 +4,7 @@ describe 'Reservation' do
   describe 'initialize' do
     before do
       @manager = Hotel::Manager.new
-      @reservation = Hotel::Reservation.new('3rd Feb 2019', '5 Feb 2019')
+      @reservation = Hotel::Reservation.new('3rd Feb 2019', '5 Feb 2019', 1)
     end
 
     it "can be created" do
@@ -44,7 +44,7 @@ describe 'Reservation' do
       @reservation.must_respond_to :status
       @reservation.status.must_equal :OPEN
 
-      reservation2 = Hotel::Reservation.new('3rd Feb 2018', '5 Feb 2018')
+      reservation2 = Hotel::Reservation.new('3rd Feb 2018', '5 Feb 2018', 1)
       reservation2.status.must_equal :CLOSED
     end
 
@@ -52,7 +52,7 @@ describe 'Reservation' do
 
   describe '#num_of_nights' do
     it 'calculates the number of nights' do
-      reservation = Hotel::Reservation.new('3rd Feb 2018', '5 Feb 2018')
+      reservation = Hotel::Reservation.new('3rd Feb 2018', '5 Feb 2018', 1)
       reservation.num_of_nights.must_equal 2
       reservation.num_of_nights.must_be_kind_of Integer
     end
@@ -60,7 +60,7 @@ describe 'Reservation' do
 
   describe '#calculate_cost' do
     it 'calculates the cost of the stay' do
-      reservation = Hotel::Reservation.new('3rd Feb 2018', '5 Feb 2018')
+      reservation = Hotel::Reservation.new('3rd Feb 2018', '5 Feb 2018', 1)
       reservation.calculate_cost.must_equal 2 * 200
       reservation.calculate_cost.must_be_kind_of Integer
     end

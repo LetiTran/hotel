@@ -13,7 +13,13 @@ module Hotel
       return all_rooms
     end
 
+    def add_reservation
 
+    end
+
+    def select_room
+
+    end
 
   end
 end
