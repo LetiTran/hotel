@@ -17,13 +17,15 @@ describe 'Room' do
 
     it 'has a status' do
       @room.must_respond_to :status
-      @room.status.must_be_kind_of TrueClass
+      @room.status.must_be_kind_of Symbol
       # @room.status.must_be_kind_of FalseClass
     end
 
-    it 'has a reservation' do
-      @room.must_respond_to :reservations
-      @room.reservations.must_be_kind_of Array #Hotel::Room.new ||
+    it 'has reservations' do
+      @room.must_respond_to :room_reservations
+      @room.room_reservations.must_be_kind_of Array
+      # @room.room_reservations[0].must_be_kind_of Hotel::Reservation
+       #Hotel::Room.new ||
     end
   end #initialize
 

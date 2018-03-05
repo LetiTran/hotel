@@ -1,16 +1,16 @@
 module Hotel
   class Room
 
-    attr_reader :reservations , :status, :room_id
+    attr_reader :room_reservations , :status, :room_id
 
     def initialize
       @room_id = 1
-      @reservations = [] #get_reservations_in_room == nil ? [] : get_reservations_in_room
-      @status = available?
+      @room_reservations = [] #get_reservations_in_room == nil ? [] : get_reservations_in_room
+      @status = available? ? :AVAILABLE  : :UNAVAILABLE 
     end
 
     def available?
-      true if @reservations.empty?
+      true if @room_reservations.empty?
     end
 
     def get_reservations_in_room
