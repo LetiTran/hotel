@@ -51,9 +51,9 @@ describe 'Manager' do
     end
 
     it 'Raises an error if not possible to add input as a Date' do
-       wrong_new_reservation_arguments = @manager.add_reservation('3rd Feb 2020','a')
+      wrong_new_reservation_arguments = @manager.add_reservation('3rd Feb 2020','a')
 
-       proc {wrong_new_reservation_arguments.must_raise ArgumentError}
+      proc {wrong_new_reservation_arguments.must_raise ArgumentError}
     end
 
   end
@@ -83,9 +83,28 @@ describe 'Manager' do
     end
 
     it 'Returns an error if reservation do not exists' do
-    proc {@manager.total_cost_of_reservation(10).must_raise ArgumentError}
+      proc {@manager.total_cost_of_reservation(10).must_raise ArgumentError}
     end
 
+
+  end
+
+  describe 'available_rooms' do
+    it 'returns a list of rooms' do
+      @manager = Hotel::Manager.new
+
+      # Add a reservation:
+      @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+      # Assert:
+      @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
+      @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 19
+
+      # Add one more reservation:
+      @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+      # Assert:
+      @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
+      @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 18
+    end
 
   end
 end # Manager
