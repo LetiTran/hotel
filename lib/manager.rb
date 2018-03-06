@@ -1,6 +1,7 @@
 # # require_relative 'block'
 # require_relative 'reservation'
 # require_relative 'room'
+# require 'Date'
 
 module Hotel
   class Manager
@@ -8,7 +9,7 @@ module Hotel
 
     def initialize
       @all_rooms = initialize_all_rooms
-      @all_reservations = []
+      @all_reservations = Array.new()
     end
 
     def initialize_all_rooms
@@ -20,7 +21,7 @@ module Hotel
     def add_reservation(check_in, check_out)
       new_reservation_data =
       { reservation_id: (@all_reservations.length + 1),
-        check_in: Date.parse(check_in) ,
+        check_in: Date.parse(check_in),
         check_out: Date.parse(check_out),
         room: select_room(check_in, check_out)
       }
@@ -30,32 +31,11 @@ module Hotel
     end
 
     def select_room(check_in, check_out)
-
       all_rooms.each do |room|
-        if room.room_reservations.empty?
-          return room
-        else
-          room.room_reservations.each do |reservation|
-            if reservation.start_date != check_in && reservation.start_date != check_out
-              return room
-            end
-          end
-        end
-      end
-
-      # status = available? ? :AVAILABLE  : :UNAVAILABLE
-      # def available?
-      #   true if @room_reservations.empty?
-      #   #CHANGE THIS TO CHECK DATE
-      # end
-      # all_rooms.each {|room| return room if room.status == :AVAILABLE}
-      # return 1
-
+        return room if room.room_reservations.empty?
+        room.room_reservations.each {|reservation| return room if reservation.start_date != check_in && reservation.start_date != check_out}
     end
 
-  end # Manager
+  end
+end # Manager
 end # Hotel
-
-#
-# puts manager = Hotel::Manager.new
-# puts "all = #{manager.all_reservations}"

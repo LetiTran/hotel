@@ -11,8 +11,8 @@ describe 'Room' do
     end
 
     it 'has an id' do
-      @room.must_respond_to :room_id
-      @room.room_id.must_be_kind_of Integer
+      @room.must_respond_to :id
+      @room.id.must_be_kind_of Integer
     end
 
     # it 'has a status' do
