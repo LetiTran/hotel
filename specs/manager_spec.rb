@@ -50,6 +50,12 @@ describe 'Manager' do
       @new_reservation.room.room_reservations[0].must_equal @new_reservation
     end
 
+    it 'Raises an error if not possible to add input as a Date' do
+       wrong_new_reservation_arguments = @manager.add_reservation('3rd Feb 2020','a')
+
+       proc {wrong_new_reservation_arguments.must_raise ArgumentError}
+    end
+
   end
 
   describe 'total_cost_of_reservation' do

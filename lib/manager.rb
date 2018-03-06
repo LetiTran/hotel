@@ -25,7 +25,7 @@ module Hotel
         check_in = Date.parse(check_in)
         check_out = Date.parse(check_out)
       rescue ArgumentError => message
-        puts "#{message} is not a date"
+        return "#{message} "
       end
         new_reservation_data =
         { reservation_id: (@all_reservations.length + 1),
