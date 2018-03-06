@@ -11,7 +11,7 @@ module Hotel
       @id = new_reservation_data[:reservation_id]
       @start_date = new_reservation_data[:check_in]
       @end_date =  new_reservation_data[:check_out]
-      @nigth_rate = 200
+      @nigth_rate = new_reservation_data[:nigth_rate]
       @cost = calculate_cost
       @room = new_reservation_data[:room]
       @status = status? ? :OPEN : :CLOSED

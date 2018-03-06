@@ -15,17 +15,13 @@ describe 'Room' do
       @room.id.must_be_kind_of Integer
     end
 
-    # it 'has a status' do
-    #   @room.must_respond_to :status
-    #   @room.status.must_be_kind_of Symbol
-    #   # @room.status.must_be_kind_of FalseClass
-    # end
-
     it 'has reservations' do
+      manager = Hotel::Manager.new
+      new_reservation = manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+
       @room.must_respond_to :room_reservations
       @room.room_reservations.must_be_kind_of Array
-      # @room.room_reservations[0].must_be_kind_of Hotel::Reservation
-       #Hotel::Room.new ||
+      new_reservation.room.room_reservations[0].must_be_kind_of Hotel::Reservation
     end
   end #initialize
 

@@ -4,12 +4,12 @@
 module Hotel
   class Room
 
-    attr_reader :room_reservations, :id
+    attr_accessor :nigth_rate, :id, :room_reservations
 
     def initialize(id)
       @id = id
+      @nigth_rate = 200
       @room_reservations = []
     end
-
   end
 end

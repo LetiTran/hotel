@@ -45,5 +45,41 @@ describe 'Manager' do
       @manager.all_reservations[0].must_equal @new_reservation
     end
 
+    it 'adds the new reservation to the room list' do
+      @new_reservation.room.room_reservations.length.must_equal 1
+      @new_reservation.room.room_reservations[0].must_equal @new_reservation
+    end
+
+  end
+
+  describe 'total_cost_of_reservation' do
+    before do
+      @manager = Hotel::Manager.new
+      @manager.add_reservation('3rd Feb 2020','5 Feb 2020') #reservation id = 1
+      @manager.add_reservation('10 Feb 2019','15 Feb 2019') #reservatio id =  2
+      @manager.add_reservation('22 Mar 2018','23 Mar 2018') #reservatio id =  3
+    end
+
+    it 'Finds a specific reservation' do
+      # reservation_id = 1
+      # manager.total_cost_of_reservation(reservation_id).must_equal
+    end
+
+    it 'Calculates the total cost of a specific reservation' do
+      reservation_id = 1
+      @manager.total_cost_of_reservation(reservation_id).must_equal 400
+
+      reservation_id = 3
+      @manager.total_cost_of_reservation(reservation_id).must_equal 200
+
+      reservation_id = 2
+      @manager.total_cost_of_reservation(reservation_id).must_equal 1000
+    end
+
+    it 'Returns an error if reservation do not exists' do
+    proc {@manager.total_cost_of_reservation(10).must_raise ArgumentError}
+    end
+
+
   end
 end # Manager
