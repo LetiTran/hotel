@@ -89,8 +89,8 @@ describe 'Manager' do
 
   end
 
-  describe 'available_rooms' do
-    it 'returns a list of rooms' do
+  describe '#available_rooms' do
+    it 'returns a list of available rooms' do
       @manager = Hotel::Manager.new
 
       # Add a reservation:
@@ -104,6 +104,19 @@ describe 'Manager' do
       # Assert:
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 18
+    end
+
+    describe "#list_reservations_at" do
+      it 'returns a list with reservations for that day' do
+        @manager = Hotel::Manager.new
+
+        # Add a reservation:
+        @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+        # Assert:
+        @manager.list_reservations_at('3rd Feb 2020').must_be_kind_of Array
+        @manager.list_reservations_at('3rd Feb 2020').length.must_equal 1
+
+      end
     end
 
   end
