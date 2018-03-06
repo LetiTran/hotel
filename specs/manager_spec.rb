@@ -20,6 +20,7 @@ describe 'Manager' do
     it 'has collections of reservations' do
       @manager.must_respond_to :all_reservations
       @manager.all_reservations.must_be_kind_of Array
+      # @manager.all_reservations.length.must_equal 0
     end
   end #initialize
 

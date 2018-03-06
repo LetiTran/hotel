@@ -15,11 +15,11 @@ describe 'Room' do
       @room.room_id.must_be_kind_of Integer
     end
 
-    it 'has a status' do
-      @room.must_respond_to :status
-      @room.status.must_be_kind_of Symbol
-      # @room.status.must_be_kind_of FalseClass
-    end
+    # it 'has a status' do
+    #   @room.must_respond_to :status
+    #   @room.status.must_be_kind_of Symbol
+    #   # @room.status.must_be_kind_of FalseClass
+    # end
 
     it 'has reservations' do
       @room.must_respond_to :room_reservations
