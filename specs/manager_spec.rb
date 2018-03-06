@@ -26,10 +26,15 @@ describe 'Manager' do
 
   describe '#add_reservation' do
     it 'creates a new reservation' do
-
+      manager = Hotel::Manager.new
+      new_reservation = manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+      new_reservation.must_be_instance_of Hotel::Reservation
     end
 
     it 'Selects an available room' do
+      manager = Hotel::Manager.new
+      new_reservation = manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+      new_reservation.room.must_be_instance_of  Hotel::Room
     end
 
     it 'adds new reservation to all_reservations list' do

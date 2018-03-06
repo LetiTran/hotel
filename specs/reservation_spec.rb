@@ -58,6 +58,7 @@ describe 'Reservation' do
 
   describe '#num_of_nights' do
     it 'calculates the number of nights' do
+      @room = Hotel::Room.new(1)
       reservation = Hotel::Reservation.new({reservation_id: 1, check_in: Date.parse('3rd Feb 2019'), check_out: Date.parse('5 Feb 2019'), room: @room})
       reservation.num_of_nights.must_equal 2
       reservation.num_of_nights.must_be_kind_of Integer
@@ -66,14 +67,10 @@ describe 'Reservation' do
 
   describe '#calculate_cost' do
     it 'calculates the cost of the stay' do
+      @room = Hotel::Room.new(1)
       reservation = Hotel::Reservation.new({reservation_id: 1, check_in: Date.parse('3rd Feb 2019'), check_out: Date.parse('5 Feb 2019'), room: @room})
       reservation.calculate_cost.must_equal 2 * 200
       reservation.calculate_cost.must_be_kind_of Integer
     end
   end
-
-  describe '#select_room' do
-    it 'selects an avilable room' do
-    end
-  end
-end
+end #Reservation

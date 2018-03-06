@@ -19,7 +19,7 @@ module Hotel
 
     def get_reservations_in_room
       reservations = []
-      Hotel::Manager.all_reservations.each do |reservation|
+      Manager.all_reservations.each do |reservation|
         reservations << reservation.room
       end
       return reservations.uniq
