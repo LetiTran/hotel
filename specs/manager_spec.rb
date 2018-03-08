@@ -1,7 +1,7 @@
 require_relative 'spec_helper'
 
 describe 'Manager' do
-  describe 'initialize' do
+  describe '#initialize' do
     before do
       @manager = Hotel::Manager.new
       @room = Hotel::Room.new(1)
@@ -67,7 +67,7 @@ describe 'Manager' do
 
   end
 
-  describe 'total_cost_of_reservation' do
+  describe '#total_cost_of_reservation' do
     before do
       @manager = Hotel::Manager.new
       @manager.add_reservation('3rd Feb 2020','5 Feb 2020') #reservation id = 1
@@ -164,5 +164,33 @@ describe 'Manager' do
       proc {@manager.reserve_room('3rd Feb 2020','5 Feb 2020', 30)}.must_raise ArgumentError
     end
 
+  end
+
+  describe '#create_block' do
+    before do
+      @manager = Hotel::Manager.new
+      @manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], 150)
+    end
+
+    it 'Initializes a block ' do
+
+    end
+
+    it 'Checks for a valid range date' do
+    end
+
+    it 'Checks that initializes with available rooms only' do
+      # (@block.rooms.each {|room| room.room_available?}).must_be_true
+    end
+
+    it 'Checks the amount of rooms for maximun 5' do
+    end
+
+    it 'Raises argument error for invalid inputs' do
+    end
+
+    it 'Raises ' do
+
+    end
   end
 end # Manager
