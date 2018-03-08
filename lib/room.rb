@@ -4,7 +4,7 @@
 module Hotel
   class Room
 
-    attr_accessor :nigth_rate, :id, :ocupied_on
+    attr_reader :nigth_rate, :id, :ocupied_on
 
     def initialize(id)
       @id = id
