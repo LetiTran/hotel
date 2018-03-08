@@ -92,17 +92,14 @@ module Hotel
       this_reserv.nil? ? ArgumentError : this_reserv.cost
     end
 
-    # def create_block(first_date, last_date, rooms, discount_rate)
-    #   get_date_range(first_date, last_date)
-    #
-    #   block_data = {
-    # date_range: date_range,
-    #     rooms: rooms,
-    #     discount_rate: discount_rate}
-    #
-    #     blocks << Block.new(block_data)
-    #
-    #   end
+    def create_block(first_date, last_date, rooms, discount_rate)
+      # Get date range:
+      block_dates = get_date_range(first_date, last_date)
+      # Organize block info:
+      block_data = {date_range: block_dates, rooms: rooms, discount_rate: discount_rate}
+      # Create block:
+      blocks << Block.new(block_data)
+    end
 
     private
 
@@ -120,8 +117,6 @@ module Hotel
 
     def get_date_range(date1, date2)
       return (Date.parse(date1)..Date.parse(date2)).map{|date| date}
-
-      # return (date1..date2).map{|date| date}
     end
 
     def initialize_all_rooms
@@ -143,6 +138,5 @@ module Hotel
     def find_room(room_id)
       return @all_rooms.find{ |room| room.id == room_id }
     end
-
   end # Manager
 end # Hotel
