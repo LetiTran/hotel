@@ -136,4 +136,33 @@ describe 'Manager' do
     end
 
   end
+
+  describe '#reserve_room' do
+
+    before do
+      @manager = Hotel::Manager.new
+      @new_reservation = @manager.reserve_room('3rd Feb 2020','5 Feb 2020', 20)
+    end
+
+    it 'creates a new reservation' do
+      @new_reservation.must_be_instance_of Hotel::Reservation
+      @new_reservation.id.must_be_kind_of Integer
+      @new_reservation.cost.must_be_kind_of Integer
+    end
+
+    it 'reserves a specific room' do
+      @new_reservation.room.id.must_equal 20
+      @new_reservation.room.must_be_instance_of Hotel::Room
+      @new_reservation.room.id.must_be_kind_of Integer
+    end
+
+    it 'throw an error if room is not available' do
+      proc {@manager.reserve_room('3rd Feb 2020','5 Feb 2020', 20)}.must_raise StandardError
+    end
+
+    it 'Throws and error if room does not exits' do
+      proc {@manager.reserve_room('3rd Feb 2020','5 Feb 2020', 30)}.must_raise ArgumentError
+    end
+
+  end
 end # Manager
