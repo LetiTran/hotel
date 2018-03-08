@@ -19,9 +19,9 @@ describe 'Room' do
       manager = Hotel::Manager.new
       new_reservation = manager.add_reservation('3rd Feb 2020','5 Feb 2020')
 
-      @room.must_respond_to :room_reservations
-      @room.room_reservations.must_be_kind_of Array
-      new_reservation.room.room_reservations[0].must_be_kind_of Hotel::Reservation
+      @room.must_respond_to :ocupied_on
+      @room.ocupied_on.must_be_kind_of Array
+      new_reservation.room.ocupied_on[0].must_be_kind_of Date
     end
   end #initialize
 

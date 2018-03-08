@@ -46,14 +46,23 @@ describe 'Manager' do
     end
 
     it 'adds the new reservation to the room list' do
-      @new_reservation.room.room_reservations.length.must_equal 1
-      @new_reservation.room.room_reservations[0].must_equal @new_reservation
+      @new_reservation.room.ocupied_on.length.must_be :>, 0
+      @new_reservation.room.ocupied_on[0].must_be_kind_of Date
     end
 
     it 'Raises an error if not possible to add input as a Date' do
       wrong_new_reservation_arguments = @manager.add_reservation('3rd Feb 2020','a')
 
       proc {wrong_new_reservation_arguments.must_raise ArgumentError}
+    end
+
+    it 'Creates a reservation to a room that will have a checkout on same day' do
+      19.times {@manager.add_reservation('3rd Feb 2020','5 Feb 2020')}
+
+      @manager.add_reservation('5 Feb 2020','6 Feb 2020')
+
+      @manager.all_reservations.length.must_equal 21
+
     end
 
   end
@@ -94,14 +103,21 @@ describe 'Manager' do
       @manager = Hotel::Manager.new
 
       # Add a reservation:
-      @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+      new_reserv = @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+      puts new_reserv.id
       # Assert:
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
+      @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' )[0].must_be_kind_of Hotel::Room
+      puts "\n"
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 19
+      @manager.available_rooms('3rd Feb 2020', '5 Feb 2020')[0].id.must_equal 2
 
       # Add one more reservation:
-      @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
-      # Assert:
+      now = @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+      puts now.id
+      puts "second all_reservations.length = #{@manager.all_reservations.length}"
+      puts "list_reservations_at = #{@manager.list_reservations_at('3rd Feb 2020').length}"
+      # # Assert:
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 18
     end
