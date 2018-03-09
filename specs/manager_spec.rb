@@ -22,6 +22,12 @@ describe 'Manager' do
       @manager.all_reservations.must_be_kind_of Array
       @manager.all_reservations.length.must_equal 0
     end
+
+    it 'has a collection of blocks' do
+      @manager.must_respond_to :blocks
+      @manager.blocks.must_be_kind_of Array
+      @manager.blocks.length.must_equal 0
+    end
   end #initialize
 
   describe '#add_reservation' do
@@ -51,9 +57,8 @@ describe 'Manager' do
     end
 
     it 'Raises an error if not possible to add input as a Date' do
-      wrong_new_reservation_arguments = @manager.add_reservation('3rd Feb 2020','a')
 
-      proc {wrong_new_reservation_arguments.must_raise ArgumentError}
+      proc {@manager.add_reservation('3rd Feb 2020','a').must_raise ArgumentError}
     end
 
     it 'Creates a reservation to a room that will have a checkout on same day' do
@@ -169,28 +174,39 @@ describe 'Manager' do
   describe '#create_block' do
     before do
       @manager = Hotel::Manager.new
-      @manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], 150)
     end
 
     it 'Initializes a block ' do
-
+      @new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], 150)
+      @new_block.must_be_kind_of Hotel::Block
+      # @manager.blocks[0].must_equal @new_block
     end
 
     it 'Checks for a valid range date' do
+      # (uses evaluate_date_input private method)
+      # Start date is >= Today:
+      proc {@manager.create_block('3 Feb 2017','5 Feb 2020', [1,2,3], 150)}.must_raise ArgumentError
+
+      # Start date is < end date:
+      proc {@manager.create_block('5 Feb 2017','3 Feb 2020', [1,2,3], 150)}.must_raise ArgumentError
+
+      # Has start date & end date:
+      proc {@manager.create_block('5 Feb 2020', [1,2,3], 150)}.must_raise ArgumentError
     end
+
+    it 'Raises argument error for invalid room inputs' do
+      # (uses evaluate_block_room_inputs private method)
+      # Input is room ids array:
+      proc {@manager.create_block('3rd Feb 2020','5 Feb 2020', %w[a,b,c], 150)}.must_raise ArgumentError
+      #Max_rooms = 5 and Min_rooms = 2 tested in block_spec.rb
+    end
+
+    it 'Raises argument error for invalid discount rate inputs' do
+    end
+
 
     it 'Checks that initializes with available rooms only' do
-      # (@block.rooms.each {|room| room.room_available?}).must_be_true
-    end
-
-    it 'Checks the amount of rooms for maximun 5' do
-    end
-
-    it 'Raises argument error for invalid inputs' do
-    end
-
-    it 'Raises ' do
-
+      # (@new_block.rooms.each {|room| room.room_available?}).must_be_true
     end
   end
 end # Manager

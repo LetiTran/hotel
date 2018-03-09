@@ -1,3 +1,4 @@
+require 'awesome_print'
 module Hotel
   class Manager
     attr_reader :all_rooms, :all_reservations, :nigth_rate, :blocks
@@ -12,14 +13,9 @@ module Hotel
     def add_reservation(check_in, check_out, room = 0 )
       evaluate_date_input(check_in, check_out)
 
-      #fix this, no need for it.
-      # Evaluate inputs
-      begin
-        check_in = Date.parse(check_in)
-        check_out = Date.parse(check_out)
-      rescue ArgumentError => message
-        return "#{message} "
-      end
+      # Parse date inputs:
+      check_in = parse_check_in(check_in)
+      check_out = parse_check_out(check_out)
 
       if room == 0
         room = select_room_for_new_reserv(check_in.to_s, check_out.to_s)
@@ -93,26 +89,45 @@ module Hotel
     end
 
     def create_block(first_date, last_date, rooms, discount_rate)
-      # Get date range:
+      # Validade inputs:
+      evaluate_block_room_inputs(rooms)
+      evaluate_date_input(first_date, last_date)
+      # Get date range for this new block:
       block_dates = get_date_range(first_date, last_date)
-      # Organize block info:
-      block_data = {date_range: block_dates, rooms: rooms, discount_rate: discount_rate}
-      # Create block:
+      # Organize new block info:
+      block_data = {id: @blocks.length + 1, date_range: block_dates, rooms: rooms, discount_rate: discount_rate}
+      # Create new block:
+      new_block = Block.new(block_data)
       blocks << Block.new(block_data)
+
+      return new_block
     end
 
     private
+    def parse_check_in(check_in)
+      return check_in = Date.parse(check_in)
+    end
 
-    def evaluate_date_input(check_in, check_out = "")
+    def parse_check_out(check_out)
+      return check_out = Date.parse(check_out)
+    end
 
-      # Evaluate inputs
-      begin
-        check_in = Date.parse(check_in)
-        check_out = Date.parse(check_out)
-      rescue ArgumentError => message
-        return "#{message} "
+    def evaluate_date_input(first_date, last_date = "")
+      # Parse inputs
+      if first_date.class == String
+        begin
+          first_date = parse_check_in(first_date)
+          last_date = parse_check_out(last_date)
+        rescue
+          ArgumentError.new("Please enter start and end date for new block of rooms.")
+        end
       end
 
+      # Start date is >= Today:
+      raise ArgumentError.new("#{first_date} has already passed.") if first_date < Date.today
+
+      # Start date is < end date:
+      raise ArgumentError.new("#{first_date} has already passed.") if first_date > last_date if last_date.class != String
     end
 
     def get_date_range(date1, date2)
@@ -137,6 +152,11 @@ module Hotel
 
     def find_room(room_id)
       return @all_rooms.find{ |room| room.id == room_id }
+    end
+
+    def evaluate_block_room_inputs(rooms)
+      # Input is array with rooms ids:
+      raise ArgumentError.new("#{rooms} must be an array of room id's.") if rooms.class != Array || rooms[0].class != Integer || rooms.each {|i| find_room(rooms[i])} == nil
     end
   end # Manager
 end # Hotel
