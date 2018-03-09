@@ -1,5 +1,5 @@
 require_relative 'spec_helper'
-
+require 'awesome_print'
 describe 'Manager' do
   describe '#initialize' do
     before do
@@ -127,7 +127,7 @@ describe 'Manager' do
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 18
     end
   end
-  
+
   describe "#list_reservations_at" do
     it 'returns a list with reservations for that day' do
       @manager = Hotel::Manager.new
@@ -225,11 +225,34 @@ describe 'Manager' do
 
   end
 
-  #TODO
   describe '#check_available_block_rooms' do
+
+    before do
+      @manager = Hotel::Manager.new
+      @new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], 150)
+    end
+
+    it 'Throws an error if room doesnt exits' do
+      proc {@manager.check_available_block_rooms(100)}.must_raise ArgumentError
+    end
+
+    it 'returns available rooms in the block' do
+      @manager.check_available_block_rooms(1).must_be_kind_of Array
+      @manager.check_available_block_rooms(1).length.must_equal 3
+      @manager.check_available_block_rooms(1)[0].must_be_kind_of Hotel::Room
+    end
+
+    it 'returnes a message if there are no available rooms' do
+      #TODO: put this on other methods that returns a list/report too
+      @manager.reserve_room('3rd Feb 2020','5 Feb 2020', 1)
+      @manager.reserve_room('3rd Feb 2020','5 Feb 2020', 2)
+      @manager.reserve_room('3rd Feb 2020','5 Feb 2020', 3)
+
+      @manager.check_available_block_rooms(1).must_be_kind_of String
+    end
   end
 
-  #TODO
   describe '#reserve_block_room' do
+    #TODO
   end
 end # Manager

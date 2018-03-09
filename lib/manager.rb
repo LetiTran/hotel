@@ -46,8 +46,15 @@ module Hotel
       this_reserv.nil? ? ArgumentError : this_reserv.cost
     end
 
-    def check_available_block_rooms
-      #TODO
+    def check_available_block_rooms(given_block_id)
+      # Find desired block of rooms:
+      block = @blocks.find {|block| block.id == given_block_id}
+      # Check if block exists:
+      #TODO: better way here? maybe something that combines this two thing into one. (finding and checking at the same time)
+      raise ArgumentError.new("Block #{block} does not exist.") if block == nil
+      # Returns list with available rooms or a message if there are no available rooms.
+      no_rooms_message = "There are no available rooms"
+      return block.available_rooms.empty? ? no_rooms_message : block.available_rooms
     end
 
     #______________Actions_for_management:
@@ -104,8 +111,14 @@ module Hotel
 
       # Get date range for this new block:
       block_dates = get_date_range(first_date, last_date)
+
+      # Get rooms:
+      block_rooms = []
+      rooms.each {|id|  block_rooms <<  find_room(id)}
+
+
       # Organize new block info:
-      block_data = {id: @blocks.length + 1, date_range: block_dates, rooms: rooms, discount_rate: discount_rate}
+      block_data = {id: @blocks.length + 1, date_range: block_dates, rooms: block_rooms, discount_rate: discount_rate}
       # Create new block:
       new_block = Block.new(block_data)
       blocks << Block.new(block_data)
@@ -115,6 +128,7 @@ module Hotel
 
     def reserve_block_room
       #TODO
+
     end
 
     #______________Private_methods:

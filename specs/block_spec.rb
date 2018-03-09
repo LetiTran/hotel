@@ -5,7 +5,7 @@ describe 'Block' do
       @manager = Hotel::Manager.new
       date_range = (Date.parse('3 Feb 2020')..Date.parse('5 Feb 2020')).map{|date| date}
 
-      block_data = {id: @manager.blocks.length + 1, date_range: date_range, rooms: [1,2,3], discount_rate: 150}
+      block_data = {id: @manager.blocks.length + 1, date_range: date_range, rooms: [@manager.all_rooms[0],@manager.all_rooms[1],@manager.all_rooms[2]], discount_rate: 150}
       @block = Hotel::Block.new(block_data)
     end
 
@@ -34,6 +34,7 @@ describe 'Block' do
     it 'has a collection of rooms' do
       @block.must_respond_to :rooms
       @block.rooms.must_be_kind_of Array
+      @block.rooms[0].must_be_kind_of Hotel::Room
     end
 
     it 'has max 5 rooms' do
