@@ -126,20 +126,19 @@ describe 'Manager' do
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 18
     end
+  end
+  
+  describe "#list_reservations_at" do
+    it 'returns a list with reservations for that day' do
+      @manager = Hotel::Manager.new
 
-    describe "#list_reservations_at" do
-      it 'returns a list with reservations for that day' do
-        @manager = Hotel::Manager.new
+      # Add a reservation:
+      @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+      # Assert:
+      @manager.list_reservations_at('3rd Feb 2020').must_be_kind_of Array
+      @manager.list_reservations_at('3rd Feb 2020').length.must_equal 1
 
-        # Add a reservation:
-        @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
-        # Assert:
-        @manager.list_reservations_at('3rd Feb 2020').must_be_kind_of Array
-        @manager.list_reservations_at('3rd Feb 2020').length.must_equal 1
-
-      end
     end
-
   end
 
   describe '#reserve_room' do
@@ -179,7 +178,7 @@ describe 'Manager' do
     it 'Initializes a block ' do
       @new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], 150)
       @new_block.must_be_kind_of Hotel::Block
-      # @manager.blocks[0].must_equal @new_block
+      @manager.blocks[0].id.must_equal @new_block.id
     end
 
     it 'Checks for a valid range date' do
@@ -202,11 +201,35 @@ describe 'Manager' do
     end
 
     it 'Raises argument error for invalid discount rate inputs' do
+      # (validate_discount_rate_input)
+      # Rate input must be a number:
+      proc {@manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], "string")}.must_raise ArgumentError
+      # Rate input must be > 0:
+      proc {@manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], -1)}.must_raise ArgumentError
     end
 
-
-    it 'Checks that initializes with available rooms only' do
+    #TODO
+    it 'Checks that initializes with available rooms only for that date range' do
       # (@new_block.rooms.each {|room| room.room_available?}).must_be_true
     end
+
+    #TODO
+    it 'the room set aside for a block should not be available for other types of reservations' do
+
+    end
+
+    #TODO
+    it 'it should not be possible to include the room already set aside for a block in a new block' do
+
+    end
+
+  end
+
+  #TODO
+  describe '#check_available_block_rooms' do
+  end
+
+  #TODO
+  describe '#reserve_block_room' do
   end
 end # Manager

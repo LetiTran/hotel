@@ -10,8 +10,50 @@ module Hotel
       @blocks = Array.new()
     end
 
+    #______________Reports_for_management:
+
+    def available_rooms(date1, date2)
+      validate_date_input(date1, date2)
+
+      available_rooms = all_rooms
+
+      date_requested_range = get_date_range(date1, date2)
+
+      date_requested_range.each do |date|
+        available_rooms.each {|room| available_rooms.delete(room) if room.ocupied_on.include?(date)}
+      end
+      return available_rooms
+    end
+
+    def list_reservations_at(reuqested_date)
+      validate_date_input(reuqested_date)
+
+      date_reservations = []
+
+      all_reservations.each do |reservation|
+        start_date = reservation.start_date
+        end_date = reservation.end_date
+
+        reservation_date_range = (start_date..end_date).map{ |date| date}
+
+        date_reservations << reservation if reservation_date_range.include?(Date.parse(reuqested_date))
+        return date_reservations
+      end
+    end
+
+    def total_cost_of_reservation(reservation_id)
+      this_reserv = all_reservations.find {|reserv| reserv.id == reservation_id}
+      this_reserv.nil? ? ArgumentError : this_reserv.cost
+    end
+
+    def check_available_block_rooms
+      #TODO
+    end
+
+    #______________Actions_for_management:
+
     def add_reservation(check_in, check_out, room = 0 )
-      evaluate_date_input(check_in, check_out)
+      validate_date_input(check_in, check_out)
 
       # Parse date inputs:
       check_in = parse_check_in(check_in)
@@ -43,19 +85,6 @@ module Hotel
       return created_reservation
     end
 
-    def available_rooms(date1, date2)
-      evaluate_date_input(date1, date2)
-
-      available_rooms = all_rooms
-
-      date_requested_range = get_date_range(date1, date2)
-
-      date_requested_range.each do |date|
-        available_rooms.each {|room| available_rooms.delete(room) if room.ocupied_on.include?(date)}
-      end
-      return available_rooms
-    end
-
     def reserve_room(check_in, check_out, room_id)
       # Find room with given id
       room = find_room(room_id)
@@ -67,31 +96,12 @@ module Hotel
       add_reservation(check_in, check_out, room)
     end
 
-    def list_reservations_at(reuqested_date)
-      evaluate_date_input(reuqested_date)
-
-      date_reservations = []
-
-      all_reservations.each do |reservation|
-        start_date = reservation.start_date
-        end_date = reservation.end_date
-
-        reservation_date_range = (start_date..end_date).map{ |date| date}
-
-        date_reservations << reservation if reservation_date_range.include?(Date.parse(reuqested_date))
-        return date_reservations
-      end
-    end
-
-    def total_cost_of_reservation(reservation_id)
-      this_reserv = all_reservations.find {|reserv| reserv.id == reservation_id}
-      this_reserv.nil? ? ArgumentError : this_reserv.cost
-    end
-
     def create_block(first_date, last_date, rooms, discount_rate)
       # Validade inputs:
-      evaluate_block_room_inputs(rooms)
-      evaluate_date_input(first_date, last_date)
+      validate_discount_rate_input(discount_rate)
+      validate_block_room_inputs(rooms)
+      validate_date_input(first_date, last_date)
+
       # Get date range for this new block:
       block_dates = get_date_range(first_date, last_date)
       # Organize new block info:
@@ -103,7 +113,19 @@ module Hotel
       return new_block
     end
 
+    def reserve_block_room
+      #TODO
+    end
+
+    #______________Private_methods:
     private
+
+    def initialize_all_rooms
+      all_rooms = []
+      20.times {|i| all_rooms << Room.new(i + 1)}
+      return all_rooms
+    end
+
     def parse_check_in(check_in)
       return check_in = Date.parse(check_in)
     end
@@ -112,7 +134,7 @@ module Hotel
       return check_out = Date.parse(check_out)
     end
 
-    def evaluate_date_input(first_date, last_date = "")
+    def validate_date_input(first_date, last_date = "")
       # Parse inputs
       if first_date.class == String
         begin
@@ -134,14 +156,12 @@ module Hotel
       return (Date.parse(date1)..Date.parse(date2)).map{|date| date}
     end
 
-    def initialize_all_rooms
-      all_rooms = []
-      20.times {|i| all_rooms << Room.new(i + 1)}
-      return all_rooms
-    end
-
     def select_room_for_new_reserv(check_in, check_out)
       return available_rooms(check_in, check_out)[0]
+    end
+
+    def find_room(room_id)
+      return @all_rooms.find{ |room| room.id == room_id }
     end
 
     def room_available?(check_in, check_out, room)
@@ -150,13 +170,14 @@ module Hotel
       return available
     end
 
-    def find_room(room_id)
-      return @all_rooms.find{ |room| room.id == room_id }
+    def validate_block_room_inputs(rooms)
+      # Input is array with rooms ids:
+      raise ArgumentError.new("#{rooms} is not a vlaid input. Input must be an array of room id's.") if rooms.class != Array || rooms[0].class != Integer || rooms.each {|i| find_room(rooms[i])} == nil
     end
 
-    def evaluate_block_room_inputs(rooms)
-      # Input is array with rooms ids:
-      raise ArgumentError.new("#{rooms} must be an array of room id's.") if rooms.class != Array || rooms[0].class != Integer || rooms.each {|i| find_room(rooms[i])} == nil
+    def validate_discount_rate_input(discount_rate)
+      raise ArgumentError.new("#{discount_rate} is not a valid rate. Discount rate must be a number.") if discount_rate.class != Float && discount_rate.class != Integer
+      raise ArgumentError.new("#{discount_rate} must be a positive number.") if  discount_rate < 0
     end
   end # Manager
 end # Hotel
