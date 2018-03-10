@@ -252,7 +252,31 @@ describe 'Manager' do
     end
   end
 
-  describe '#reserve_block_room' do
-    #TODO
+  describe '#reserve_room_in_block' do
+    before do
+      @manager = Hotel::Manager.new
+      @new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], 150)
+      @new_block_room_reservation = @manager.reserve_room_in_block(1, room: 2)
+    end
+
+    it 'reservers a room form a specific block' do
+      @new_block_room_reservation.must_be_kind_of Hotel::Reservation
+      @manager.all_reservations[0].must_equal @new_block_room_reservation
+      @manager.all_reservations[0].room.id.must_equal 2
+      @manager.all_reservations[0].id.must_equal @new_block_room_reservation.id
+    end
+
+    it 'accepts input of specific room as not required' do
+      reserve_random_room_in_block = @manager.reserve_room_in_block(1)
+      reserve_random_room_in_block.must_be_kind_of Hotel::Reservation
+      @manager.all_reservations[1].id.must_equal reserve_random_room_in_block.id
+    end
+
+    it 'has matching dates for reservation and block date range' do
+    end
+
+    it 'sets room as unvailable for other types of reservations for that date' do
+    end
+
   end
 end # Manager

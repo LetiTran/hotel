@@ -48,10 +48,7 @@ module Hotel
 
     def check_available_block_rooms(given_block_id)
       # Find desired block of rooms:
-      block = @blocks.find {|block| block.id == given_block_id}
-      # Check if block exists:
-      #TODO: better way here? maybe something that combines this two thing into one. (finding and checking at the same time)
-      raise ArgumentError.new("Block #{block} does not exist.") if block == nil
+      block = find_block(given_block_id)
       # Returns list with available rooms or a message if there are no available rooms.
       no_rooms_message = "There are no available rooms"
       return block.available_rooms.empty? ? no_rooms_message : block.available_rooms
@@ -63,9 +60,10 @@ module Hotel
       validate_date_input(check_in, check_out)
 
       # Parse date inputs:
-      check_in = parse_check_in(check_in)
-      check_out = parse_check_out(check_out)
-
+      if check_in.class != Date
+        check_in = parse_check_in(check_in)
+        check_out = parse_check_out(check_out)
+      end
       if room == 0
         room = select_room_for_new_reserv(check_in.to_s, check_out.to_s)
       end
@@ -126,10 +124,16 @@ module Hotel
       return new_block
     end
 
-    def reserve_block_room
-      #TODO
+    def reserve_room_in_block(block_id, room: 1)
+      block = find_block(block_id)
+      room = find_room(room)
+      new_reservation = add_reservation(block.date_range[0], block.date_range.last, room)
 
+      @blocks << new_reservation
+
+      return new_reservation
     end
+
 
     #______________Private_methods:
     private
@@ -158,7 +162,6 @@ module Hotel
           ArgumentError.new("Please enter start and end date for new block of rooms.")
         end
       end
-
       # Start date is >= Today:
       raise ArgumentError.new("#{first_date} has already passed.") if first_date < Date.today
 
@@ -178,6 +181,14 @@ module Hotel
       return @all_rooms.find{ |room| room.id == room_id }
     end
 
+    def find_block(block_id)
+      # Find desired block of rooms:
+      block = @blocks.find {|block| block.id == block_id}
+      # Check if block exists:
+      raise ArgumentError.new("Block #{block} does not exist.") if block == nil
+
+      return block
+    end
     def room_available?(check_in, check_out, room)
       # range_date = get_date_range(date1, date2)
       available = available_rooms(check_in, check_out).include?(room) ? true : false
