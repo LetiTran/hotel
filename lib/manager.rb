@@ -56,7 +56,7 @@ module Hotel
 
     #______________Actions_for_management:
 
-    def add_reservation(check_in, check_out, room = 0 )
+    def add_reservation(check_in, check_out, room = 0, block = nil )
       validate_date_input(check_in, check_out)
 
       # Parse date inputs:
@@ -75,7 +75,8 @@ module Hotel
         check_out: check_out,
         room: room,
         # room: select_room_for_new_reserv(check_in, check_out),
-        nigth_rate: nigth_rate
+        nigth_rate: nigth_rate,
+        block: block
       }
       created_reservation = Reservation.new(new_reservation_data)
 
@@ -104,17 +105,15 @@ module Hotel
     def create_block(first_date, last_date, rooms, discount_rate)
       # Validade inputs:
       validate_discount_rate_input(discount_rate)
-      validate_block_room_inputs(rooms)
+      validate_block_room_inputs(rooms, first_date, last_date)
       validate_date_input(first_date, last_date)
-
       # Get date range for this new block:
       block_dates = get_date_range(first_date, last_date)
-
       # Get rooms:
       block_rooms = []
       rooms.each {|id|  block_rooms <<  find_room(id)}
-
-
+      # Check that all rooms are available:
+      all_rooms_available_for_new_block?(first_date, last_date, block_rooms)
       # Organize new block info:
       block_data = {id: @blocks.length + 1, date_range: block_dates, rooms: block_rooms, discount_rate: discount_rate}
       # Create new block:
@@ -125,9 +124,15 @@ module Hotel
     end
 
     def reserve_room_in_block(block_id, room: 1)
+      #Find room and block with given inputs:
       block = find_block(block_id)
       room = find_room(room)
-      new_reservation = add_reservation(block.date_range[0], block.date_range.last, room)
+
+      # Check if room belongs in block:
+      raise ArgumentError.new("This room is not part of this block") if block.rooms.include?(room) == false
+
+      #Create new reservation:
+      new_reservation = add_reservation(block.date_range.first, block.date_range.last, room, block)
 
       @blocks << new_reservation
 
@@ -189,15 +194,20 @@ module Hotel
 
       return block
     end
+
     def room_available?(check_in, check_out, room)
       # range_date = get_date_range(date1, date2)
       available = available_rooms(check_in, check_out).include?(room) ? true : false
       return available
     end
 
-    def validate_block_room_inputs(rooms)
+    def validate_block_room_inputs(rooms, first_date, last_date)
       # Input is array with rooms ids:
       raise ArgumentError.new("#{rooms} is not a vlaid input. Input must be an array of room id's.") if rooms.class != Array || rooms[0].class != Integer || rooms.each {|i| find_room(rooms[i])} == nil
+    end
+
+    def all_rooms_available_for_new_block?(first_date, last_date, block_rooms)
+      block_rooms.each {|room|  raise ArgumentError.new( "All rooms must be available to be part of a new block.") if room_available?(first_date, last_date, room) == false}
     end
 
     def validate_discount_rate_input(discount_rate)
