@@ -94,6 +94,12 @@ describe 'Manager' do
 
       reservation_id = 2
       @manager.total_cost_of_reservation(reservation_id).must_equal 1000
+
+      # Create a block and new reservation on it:
+      @new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [8,9,10], 150)
+      @new_block_room_reservation = @manager.reserve_room_in_block(1, room: 10) #reservatio id =  4
+      # Assert:
+      @manager.total_cost_of_reservation(4).must_equal 150*2
     end
 
     it 'Returns an error if reservation do not exists' do
@@ -125,6 +131,12 @@ describe 'Manager' do
       # # Assert:
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 18
+
+      # Create a block and new reservation on it:
+      @new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [8,9,10], 150)
+      @new_block_room_reservation = @manager.reserve_room_in_block(1, room: 10)
+      # Assert:
+      @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 17
     end
   end
 
@@ -138,6 +150,11 @@ describe 'Manager' do
       @manager.list_reservations_at('3rd Feb 2020').must_be_kind_of Array
       @manager.list_reservations_at('3rd Feb 2020').length.must_equal 1
 
+      # Create a block and new reservation on it:
+      @new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [2,3,4], 150)
+      @new_block_room_reservation = @manager.reserve_room_in_block(1, room: 2)
+      # Assert:
+      @manager.list_reservations_at('3rd Feb 2020').length.must_equal 2
     end
   end
 
@@ -162,6 +179,9 @@ describe 'Manager' do
 
     it 'throw an error if room is not available' do
       proc {@manager.reserve_room('3rd Feb 2020','5 Feb 2020', 20)}.must_raise StandardError
+
+      # Check for rooms set aside for existing block too:
+      #TODO
     end
 
     it 'Throws and error if room does not exits' do

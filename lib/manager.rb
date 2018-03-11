@@ -31,14 +31,16 @@ module Hotel
       date_reservations = []
 
       all_reservations.each do |reservation|
+        puts "reservation in each = #{reservation}"
         start_date = reservation.start_date
         end_date = reservation.end_date
 
         reservation_date_range = (start_date..end_date).map{ |date| date}
 
         date_reservations << reservation if reservation_date_range.include?(Date.parse(reuqested_date))
-        return date_reservations
+
       end
+      return date_reservations
     end
 
     def total_cost_of_reservation(reservation_id)
@@ -135,7 +137,7 @@ module Hotel
       new_reservation = add_reservation(block.date_range.first, block.date_range.last, room, block)
 
       @blocks << new_reservation
-
+      puts "new_reservation = #{new_reservation}"
       return new_reservation
     end
 
