@@ -179,13 +179,17 @@ describe 'Manager' do
 
     it 'throw an error if room is not available' do
       proc {@manager.reserve_room('3rd Feb 2020','5 Feb 2020', 20)}.must_raise StandardError
-
-      # Check for rooms set aside for existing block too:
-      #TODO
     end
 
-    it 'Throws and error if room does not exits' do
+    it 'Throws an error if room does not exits' do
       proc {@manager.reserve_room('3rd Feb 2020','5 Feb 2020', 30)}.must_raise ArgumentError
+    end
+
+    it 'throws an error if room is set aside for a block' do
+      # Create a block and new reservation on it:
+      new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [2,3,4], 150)
+      # Assert:
+      proc {@manager.reserve_room('3rd Feb 2020','5 Feb 2020', 2)}.must_raise StandardError
     end
 
   end
@@ -268,9 +272,9 @@ describe 'Manager' do
 
     it 'returnes a message if there are no available rooms' do
       #TODO: put this on other methods that returns a list/report too
-      @manager.reserve_room('3rd Feb 2020','5 Feb 2020', 1)
-      @manager.reserve_room('3rd Feb 2020','5 Feb 2020', 2)
-      @manager.reserve_room('3rd Feb 2020','5 Feb 2020', 3)
+      @manager.reserve_room_in_block(1, room: 1)
+      @manager.reserve_room_in_block(1, room: 2)
+      @manager.reserve_room_in_block(1, room: 3)
 
       @manager.check_available_block_rooms(1).must_be_kind_of String
     end

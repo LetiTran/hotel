@@ -96,10 +96,15 @@ module Hotel
     def reserve_room(check_in, check_out, room_id)
       # Find room with given id
       room = find_room(room_id)
-      # Check if room esxists:
+      # Check and raise error if room esxists:
       raise ArgumentError.new("Room is does not exists") if all_rooms.include?(room) == false
-      # Check if room is availble:
+      # Check and raise error if room is availble:
       raise StandardError.new("Room is not available") if room_available?(check_in, check_out, room) == false
+      #Check and raise error if room already belongs to a block:
+      already_in_block = nil
+      blocks.each{|block| already_in_block = (block.rooms.include?(room) == true)}
+      raise StandardError.new("Room already belongs to a block, please use method reserve_room_in_block to reserve it.") if already_in_block == true
+
       # Create reservation:
       add_reservation(check_in, check_out, room)
     end
