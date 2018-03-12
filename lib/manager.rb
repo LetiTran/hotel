@@ -147,7 +147,6 @@ module Hotel
       new_reservation = add_reservation(block.date_range.first, block.date_range.last, room, block)
 
       @blocks << new_reservation
-      puts "new_reservation = #{new_reservation}"
       return new_reservation
     end
 

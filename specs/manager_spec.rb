@@ -115,19 +115,14 @@ describe 'Manager' do
 
       # Add a reservation:
       new_reserv = @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
-      puts new_reserv.id
       # Assert:
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' )[0].must_be_kind_of Hotel::Room
-      puts "\n"
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 19
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020')[0].id.must_equal 2
 
       # Add one more reservation:
       now = @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
-      puts now.id
-      puts "second all_reservations.length = #{@manager.all_reservations.length}"
-      puts "list_reservations_at = #{@manager.list_reservations_at('3rd Feb 2020').length}"
       # # Assert:
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 18
