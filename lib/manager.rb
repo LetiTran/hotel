@@ -133,7 +133,9 @@ module Hotel
       return new_block
     end
 
-    def reserve_room_in_block(block_id, room: 1)
+    def reserve_room_in_block(block_id, room: 0)
+      # Assign a available room if none is given:
+      room = find_block(block_id).available_rooms[0].id if room == 0
       #Find room and block with given inputs:
       block = find_block(block_id)
       room = find_room(room)
