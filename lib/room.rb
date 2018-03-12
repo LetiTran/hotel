@@ -1,6 +1,3 @@
-# require_relative 'reservation'
-# require_relative 'manager'
-
 module Hotel
   class Room
 
@@ -11,9 +8,5 @@ module Hotel
       @nigth_rate = 200
       @ocupied_on = []
     end
-
-    # def available?
-    #
-    # end
   end
 end

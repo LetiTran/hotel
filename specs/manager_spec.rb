@@ -197,10 +197,11 @@ describe 'Manager' do
   describe '#create_block' do
     before do
       @manager = Hotel::Manager.new
+      @new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], 150)
     end
 
     it 'Initializes a block ' do
-      @new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], 150)
+
       @new_block.must_be_kind_of Hotel::Block
       @manager.blocks[0].id.must_equal @new_block.id
     end
@@ -223,8 +224,8 @@ describe 'Manager' do
       proc {@manager.create_block('3rd Feb 2020','5 Feb 2020', %w[a,b,c], 150)}.must_raise ArgumentError
 
       # All rooms desired are available:
-      # @manager.reserve_room('3rd Feb 2020','5 Feb 2020', 1)
-      # proc {@manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], 150)}.must_raise StandardError
+      @manager.reserve_room('3rd Feb 2020','5 Feb 2020', 4)
+      proc {@manager.create_block('3rd Feb 2020','5 Feb 2020', [4,2,3], 150)}.must_raise StandardError
 
       #Max_rooms = 5 and Min_rooms = 2 tested in block_spec.rb
     end
@@ -239,18 +240,15 @@ describe 'Manager' do
 
     #TODO
     it 'Checks that initializes with available rooms only for that date range' do
-      # (@new_block.rooms.each {|room| room.room_available?}).must_be_true
+      assert = []
+      @new_block.rooms.each {|room| assert << room.ocupied_on.empty?}
+      assert.each { |i| i.must_equal TRUE }
     end
 
     #TODO
     it 'the room set aside for a block should not be available for other types of reservations' do
-
+      proc {@manager.reserve_room('3rd Feb 2020','5 Feb 2020', 2)}.must_raise StandardError
     end
-
-    #TODO
-    it 'it should not be possible to reserve a room already set aside for a block' do
-    end
-
   end
 
   describe '#check_available_block_rooms' do
@@ -271,12 +269,12 @@ describe 'Manager' do
     end
 
     it 'returnes a message if there are no available rooms' do
-      #TODO: put this on other methods that returns a list/report too
       @manager.reserve_room_in_block(1, room: 1)
       @manager.reserve_room_in_block(1, room: 2)
       @manager.reserve_room_in_block(1, room: 3)
-
+      # Assert:
       @manager.check_available_block_rooms(1).must_be_kind_of String
+      @manager.check_available_block_rooms(1).must_equal "There are no available rooms"
     end
   end
 
@@ -299,7 +297,7 @@ describe 'Manager' do
       @manager.all_reservations[0].room.id.must_equal 2
       @manager.all_reservations[0].id.must_equal @new_block_room_reservation.id
 
-      # Reservation has a block:
+      # Assert that reservation has a block:
       @manager.all_reservations[0].block.must_be_kind_of Hotel::Block
       @manager.all_reservations[0].block.id.must_equal 1
     end
@@ -312,12 +310,13 @@ describe 'Manager' do
 
     it 'has matching dates for both reservation and block' do
       @new_block_room_reservation.start_date.must_equal @new_block_room_reservation.block.date_range.first
-
+      # Assert:
       @new_block_room_reservation.end_date.must_equal @new_block_room_reservation.block.date_range.last
     end
 
     it 'sets room as unvailable for other types of reservations for that date' do
       room_id = @new_block_room_reservation.room.id
+      # Assert:
       proc {@manager.reserve_room('3rd Feb 2020','5 Feb 2020', room_id)}.must_raise StandardError
     end
   end

@@ -13,14 +13,15 @@ module Hotel
     #______________Reports_for_management:
 
     def available_rooms(date1, date2)
+      # Validate inputs:
       validate_date_input(date1, date2)
 
+      # Return only available rooms:
       available_rooms = all_rooms
-
       date_requested_range = get_date_range(date1, date2)
 
       date_requested_range.each do |date|
-        available_rooms.each {|room| available_rooms.delete(room) if room.ocupied_on.include?(date)}
+        available_rooms.delete_if {|room| room.ocupied_on.include?(date) }
       end
       return available_rooms
     end
@@ -31,14 +32,12 @@ module Hotel
       date_reservations = []
 
       all_reservations.each do |reservation|
-        puts "reservation in each = #{reservation}"
         start_date = reservation.start_date
         end_date = reservation.end_date
 
         reservation_date_range = (start_date..end_date).map{ |date| date}
 
         date_reservations << reservation if reservation_date_range.include?(Date.parse(reuqested_date))
-
       end
       return date_reservations
     end
@@ -66,9 +65,8 @@ module Hotel
         check_in = parse_check_in(check_in)
         check_out = parse_check_out(check_out)
       end
-      if room == 0
-        room = select_room_for_new_reserv(check_in.to_s, check_out.to_s)
-      end
+      # Choose an available room if not given as an input:
+      room = select_room_for_new_reserv(check_in.to_s, check_out.to_s) if room == 0
 
       # Creat new reservation:
       new_reservation_data =
@@ -114,15 +112,20 @@ module Hotel
       validate_discount_rate_input(discount_rate)
       validate_block_room_inputs(rooms, first_date, last_date)
       validate_date_input(first_date, last_date)
+
       # Get date range for this new block:
       block_dates = get_date_range(first_date, last_date)
+
       # Get rooms:
       block_rooms = []
       rooms.each {|id|  block_rooms <<  find_room(id)}
+
       # Check that all rooms are available:
       all_rooms_available_for_new_block?(first_date, last_date, block_rooms)
+
       # Organize new block info:
       block_data = {id: @blocks.length + 1, date_range: block_dates, rooms: block_rooms, discount_rate: discount_rate}
+
       # Create new block:
       new_block = Block.new(block_data)
       blocks << Block.new(block_data)
@@ -198,7 +201,6 @@ module Hotel
       block = @blocks.find {|block| block.id == block_id}
       # Check if block exists:
       raise ArgumentError.new("Block #{block} does not exist.") if block == nil
-
       return block
     end
 
@@ -214,7 +216,7 @@ module Hotel
     end
 
     def all_rooms_available_for_new_block?(first_date, last_date, block_rooms)
-      block_rooms.each {|room|  raise ArgumentError.new( "All rooms must be available to be part of a new block.") if room_available?(first_date, last_date, room) == false}
+      block_rooms.each {|room|  raise ArgumentError.new( "All requested rooms must be available to be part of a new block.") if room_available?(first_date, last_date, room) == false}
     end
 
     def validate_discount_rate_input(discount_rate)
