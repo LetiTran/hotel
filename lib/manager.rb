@@ -23,6 +23,7 @@ module Hotel
       available_rooms = all_rooms
       date_requested_range = get_date_range(date1, date2)
 
+# TODO: DRY
       date_requested_range.each do |date|
         # available_rooms.delete_if {|room| reservation.room == room && ocupied_on.include?(date) }
         available_rooms.each do |room|
@@ -131,8 +132,9 @@ module Hotel
       block_dates = get_date_range(first_date, last_date)
 
       # Get rooms:
-      block_rooms = []
-      rooms.each {|id|  block_rooms <<  find_room(id)}
+      # block_rooms = []
+      # rooms.each {|id|  block_rooms <<  find_room(id)}
+      block_rooms = rooms
 
       # Check that all rooms are available:
       all_rooms_available_for_new_block?(first_date, last_date, block_rooms)
@@ -206,7 +208,8 @@ module Hotel
     end
 
     def find_room(room_id)
-      return @all_rooms.find{ |room| room.id == room_id }
+      # TODO: needs this?
+      return @all_rooms.find{ |room| room == room_id }
     end
 
     def find_block(block_id)
