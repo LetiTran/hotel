@@ -4,7 +4,10 @@ module Hotel
     attr_reader :all_rooms, :all_reservations, :nigth_rate, :blocks
 
     def initialize
-      @all_rooms = initialize_all_rooms
+      @all_rooms = (1..20).to_a
+      @nigth_rate = 200
+      @ocupied_on = {}
+
       @all_reservations = Array.new()
       @nigth_rate = 200
       @blocks = Array.new()
@@ -21,7 +24,18 @@ module Hotel
       date_requested_range = get_date_range(date1, date2)
 
       date_requested_range.each do |date|
-        available_rooms.delete_if {|room| room.ocupied_on.include?(date) }
+        # available_rooms.delete_if {|room| reservation.room == room && ocupied_on.include?(date) }
+        available_rooms.each do |room|
+          all_reservations.each do |reservation|
+            if reservation.room == room
+              if  get_date_range(reservation.start_date, reservation.end_date).include?(date)
+                available_rooms.delete(room)
+              end
+            end
+          end
+        end
+
+
       end
       return available_rooms
     end
@@ -84,8 +98,8 @@ module Hotel
       all_reservations << created_reservation
 
       # Add date range of reservation to the room list:
-      reservation_ocupie_room = (check_in...check_out).map{|date| date}
-      reservation_ocupie_room.each {|date| created_reservation.room.ocupied_on << date}
+      # reservation_ocupie_room = (check_in...check_out).map{|date| date}
+      # reservation_ocupie_room.each {|date| created_reservation.room.ocupied_on << date}
 
       # Return new reservation:
       return created_reservation
@@ -154,12 +168,6 @@ module Hotel
     #______________Private_methods:
     private
 
-    def initialize_all_rooms
-      all_rooms = []
-      20.times {|i| all_rooms << Room.new(i + 1)}
-      return all_rooms
-    end
-
     def parse_check_in(check_in)
       return check_in = Date.parse(check_in)
     end
@@ -186,7 +194,11 @@ module Hotel
     end
 
     def get_date_range(date1, date2)
+      if date1.class == String
       return (Date.parse(date1)..Date.parse(date2)).map{|date| date}
+    else
+      return (date1..date2).map{|date| date}
+    end
     end
 
     def select_room_for_new_reserv(check_in, check_out)
