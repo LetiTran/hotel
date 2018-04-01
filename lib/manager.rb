@@ -39,6 +39,8 @@ module Hotel
             end
           end
         end
+
+        # TODO: need this?
       else
         block = find_block(block_id)
         available_rooms = block.rooms
@@ -87,7 +89,6 @@ module Hotel
     def check_available_block_rooms(given_block_id)
       # Find desired block of rooms:
       block = find_block(given_block_id)
-
 
       available_rooms = block.rooms
 
@@ -187,7 +188,7 @@ module Hotel
 
       # Assign a available room if none is given:
       # room = find_block(block_id).available_rooms[0] if room == 0
-      room = available_rooms(date1, date2, block_id)[0] if room == 0
+      room = check_available_block_rooms(block_id)[0] if room == 0
 
       #Find room and block with given inputs:
       block = find_block(block_id)

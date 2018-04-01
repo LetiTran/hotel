@@ -54,3 +54,8 @@ Implementation B is easier to modify since it would only be necessary to change 
 Implementation B
 
 - Bonus question once you've read Metz ch. 3: Which implementation is more loosely coupled?
+
+
+-----------------------------------------------
+
+Revisiting Hotel
