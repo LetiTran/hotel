@@ -1,4 +1,4 @@
-require 'awesome_print'
+
 module Hotel
   class Manager
     attr_reader :all_rooms, :all_reservations, :nigth_rate, :blocks
@@ -15,29 +15,51 @@ module Hotel
 
     #______________Reports_for_management:
 
-    def available_rooms(date1, date2)
+    def available_rooms(date1, date2, block_id = "")
       # Validate inputs:
       validate_date_input(date1, date2)
 
-      # Return only available rooms:
-      available_rooms = all_rooms
-      date_requested_range = get_date_range(date1, date2)
+      if block_id == ""
+        # Return only available rooms:
+        available_rooms = all_rooms
+        date_requested_range = get_date_range(date1, date2)
 
-# TODO: DRY
-      date_requested_range.each do |date|
-        # available_rooms.delete_if {|room| reservation.room == room && ocupied_on.include?(date) }
-        available_rooms.each do |room|
-          all_reservations.each do |reservation|
-            if reservation.room == room
-              if  get_date_range(reservation.start_date, reservation.end_date).include?(date)
-                available_rooms.delete(room)
+
+
+        # TODO: DRY
+        date_requested_range.each do |date|
+          # available_rooms.delete_if {|room| reservation.room == room && ocupied_on.include?(date) }
+          available_rooms.each do |room|
+            all_reservations.each do |reservation|
+              if reservation.room == room
+                if  get_date_range(reservation.start_date, reservation.end_date).include?(date)
+                  available_rooms.delete(room)
+                end
               end
             end
           end
         end
+      else
+        block = find_block(block_id)
+        available_rooms = block.rooms
+        date_requested_range = get_date_range(date1, date2)
 
+        date_requested_range.each do |date|
+          # available_rooms.delete_if {|room| reservation.room == room && ocupied_on.include?(date) }
+          available_rooms.each do |room|
+            all_reservations.each do |reservation|
+              if reservation.room == room
+                if  get_date_range(reservation.start_date, reservation.end_date).include?(date)
+                  available_rooms.delete(room)
+                end
+              end
+            end
+          end
 
+        end
       end
+
+
       return available_rooms
     end
 
@@ -65,9 +87,20 @@ module Hotel
     def check_available_block_rooms(given_block_id)
       # Find desired block of rooms:
       block = find_block(given_block_id)
+
+
+      available_rooms = block.rooms
+
+      all_reservations.each do |reservation|
+        if reservation.block == block
+          available_rooms.each {|room| available_rooms.delete(room) if reservation.room == room}
+        end
+      end
+
+
       # Returns list with available rooms or a message if there are no available rooms.
       no_rooms_message = "There are no available rooms"
-      return block.available_rooms.empty? ? no_rooms_message : block.available_rooms
+      return available_rooms.empty? ? no_rooms_message : available_rooms
     end
 
     #______________Actions_for_management:
@@ -150,11 +183,15 @@ module Hotel
     end
 
     def reserve_room_in_block(block_id, room: 0)
+      # TODO: check if room is available in block, if room is given
+
       # Assign a available room if none is given:
-      room = find_block(block_id).available_rooms[0].id if room == 0
+      # room = find_block(block_id).available_rooms[0] if room == 0
+      room = available_rooms(date1, date2, block_id)[0] if room == 0
+
       #Find room and block with given inputs:
       block = find_block(block_id)
-      room = find_room(room)
+      # room = find_room(room)
 
       # Check if room belongs in block:
       raise ArgumentError.new("This room is not part of this block") if block.rooms.include?(room) == false
@@ -162,7 +199,7 @@ module Hotel
       #Create new reservation:
       new_reservation = add_reservation(block.date_range.first, block.date_range.last, room, block)
 
-      @blocks << new_reservation
+      # @blocks << new_reservation
       return new_reservation
     end
 
@@ -197,10 +234,10 @@ module Hotel
 
     def get_date_range(date1, date2)
       if date1.class == String
-      return (Date.parse(date1)..Date.parse(date2)).map{|date| date}
-    else
-      return (date1..date2).map{|date| date}
-    end
+        return (Date.parse(date1)..Date.parse(date2)).map{|date| date}
+      else
+        return (date1..date2).map{|date| date}
+      end
     end
 
     def select_room_for_new_reserv(check_in, check_out)
