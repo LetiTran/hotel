@@ -55,14 +55,8 @@ module Hotel
       # Find desired block of rooms:
       block = find_block(given_block_id)
 
-      available_rooms = block.rooms
-
-      all_reservations.each do |reservation|
-        if reservation.block == block
-          available_rooms.each {|room| available_rooms.delete(room) if reservation.room == room}
-        end
-      end
-
+      # Check rooms available in block:
+      available_rooms =  block.available_rooms
 
       # Returns list with available rooms or a message if there are no available rooms.
       no_rooms_message = "There are no available rooms"
@@ -88,7 +82,6 @@ module Hotel
         check_in: check_in,
         check_out: check_out,
         room: room,
-        # room: select_room_for_new_reserv(check_in, check_out),
         nigth_rate: nigth_rate,
         block: block
       }
@@ -149,23 +142,26 @@ module Hotel
     end
 
     def reserve_room_in_block(block_id, room: 0)
-      # TODO: check if room is available in block, if room is given
+
+      #Find block with given inputs:
+      block = find_block(block_id)
 
       # Assign a available room if none is given:
-      # room = find_block(block_id).available_rooms[0] if room == 0
-      room = check_available_block_rooms(block_id)[0] if room == 0
+      if room == 0
+        room = check_available_block_rooms(block_id)[0]
 
-      #Find room and block with given inputs:
-      block = find_block(block_id)
-      # room = find_room(room)
-
-      # Check if room belongs in block:
-      raise ArgumentError.new("This room is not part of this block") if block.rooms.include?(room) == false
+        # If specific room is given:
+      else
+        # Check if room belongs in block:
+        raise ArgumentError.new("This room is not part of this block") if block.rooms.include?(room) == false
+        # Check if room is available in block:
+        raise ArgumentError.new("This room is not available.") if block.available_rooms.include?(room) == false
+      end
 
       #Create new reservation:
       new_reservation = add_reservation(block.date_range.first, block.date_range.last, room, block)
+      block.mark_reserved_room(room)
 
-      # @blocks << new_reservation
       return new_reservation
     end
 
