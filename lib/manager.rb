@@ -73,8 +73,13 @@ module Hotel
         check_in = parse_check_in(check_in)
         check_out = parse_check_out(check_out)
       end
-      # Choose an available room if not given as an input:
-      room = select_room_for_new_reserv(check_in.to_s, check_out.to_s) if room == 0
+
+      if room == 0
+        # Choose an available room if not given as an input:
+        room = select_room_for_new_reserv(check_in.to_s, check_out.to_s)
+      else # Check that room is available, if given:
+        raise ArgumentError.new("This room is not available.") if available_rooms(check_in, check_out).include?(room) == false
+      end
 
       # Creat new reservation:
       new_reservation_data =
@@ -89,10 +94,6 @@ module Hotel
 
       # Add reservation to all_reservations list
       all_reservations << created_reservation
-
-      # Add date range of reservation to the room list:
-      # reservation_ocupie_room = (check_in...check_out).map{|date| date}
-      # reservation_ocupie_room.each {|date| created_reservation.room.ocupied_on << date}
 
       # Return new reservation:
       return created_reservation
@@ -206,7 +207,6 @@ module Hotel
     end
 
     def find_room(room_id)
-      # TODO: needs this?
       return @all_rooms.find{ |room| room == room_id }
     end
 

@@ -49,11 +49,9 @@ describe 'Manager' do
       @manager.all_reservations[0].must_equal @new_reservation
     end
 
-    # TODO: maybe check that the room is marked as not available here?
-    # it 'adds the new reservation to the room list' do
-    #   @new_reservation.room.ocupied_on.length.must_be :>, 0
-    #   @new_reservation.room.ocupied_on[0].must_be_kind_of Date
-    # end
+    it 'makes the room unavailable' do
+      proc {@manager.add_reservation('3rd Feb 2020','5 Feb 2020', 1).must_raise ArgumentError}
+    end
 
     it 'Raises an error if not possible to add input as a Date' do
       proc {@manager.add_reservation('3rd Feb 2020','a').must_raise ArgumentError}
@@ -122,7 +120,6 @@ describe 'Manager' do
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 18
 
-      # TODO:
       # Create a block and new reservation on it:
       @new_block = @manager.create_block('3rd Feb 2020','5 Feb 2020', [8,9,10], 150)
       @new_block_room_reservation = @manager.reserve_room_in_block(1, room: 10)
@@ -191,7 +188,6 @@ describe 'Manager' do
     end
 
     it 'Initializes a block ' do
-
       @new_block.must_be_kind_of Hotel::Block
       @manager.blocks[0].id.must_equal @new_block.id
     end
@@ -228,14 +224,6 @@ describe 'Manager' do
       proc {@manager.create_block('3rd Feb 2020','5 Feb 2020', [1,2,3], -1)}.must_raise ArgumentError
     end
 
-    #TODO
-    it 'Checks that initializes with available rooms only for that date range' do
-      # assert = []
-      # @new_block.rooms.each {|room| assert << room.ocupied_on.empty?}
-      # assert.each { |i| i.must_equal TRUE }
-    end
-
-    #TODO
     it 'the room set aside for a block should not be available for other types of reservations' do
       proc {@manager.reserve_room('3rd Feb 2020','5 Feb 2020', 2)}.must_raise StandardError
     end
