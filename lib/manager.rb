@@ -29,8 +29,8 @@ module Hotel
       return available_rooms
     end
 
-    def list_reservations_at(reuqested_date)
-      validate_date_input(reuqested_date)
+    def list_reservations_at(requested_date)
+      validate_date_input(requested_date)
 
       date_reservations = []
 
@@ -38,9 +38,9 @@ module Hotel
         start_date = reservation.start_date
         end_date = reservation.end_date
 
-        reservation_date_range = (start_date..end_date).map{ |date| date}
+        reservation_date_range = (start_date..end_date).to_a
 
-        date_reservations << reservation if reservation_date_range.include?(Date.parse(reuqested_date))
+        date_reservations << reservation if reservation_date_range.include?(Date.parse(requested_date))
       end
 
       return date_reservations
@@ -48,7 +48,7 @@ module Hotel
 
     def total_cost_of_reservation(reservation_id)
       this_reserv = all_reservations.find {|reserv| reserv.id == reservation_id}
-      this_reserv.nil? ? ArgumentError : this_reserv.cost
+      this_reserv.nil? ? ArgumentError.new("No reservation at this date!") : this_reserv.cost
     end
 
     def check_available_block_rooms(given_block_id)
@@ -169,7 +169,6 @@ module Hotel
       return new_reservation
     end
 
-
     #______________Private_methods:
     private
 
@@ -217,10 +216,10 @@ module Hotel
 
     def find_block(block_id)
       # Find desired block of rooms:
-      block = @blocks.find {|block| block.id == block_id}
+      this_block = @blocks.find {|block| block.id == block_id}
       # Check if block exists:
-      raise ArgumentError.new("Block #{block} does not exist.") if block == nil
-      return block
+      raise ArgumentError.new("Block #{block_id} does not exist.") if this_block == nil
+      return this_block
     end
 
     def room_available?(check_in, check_out, room)

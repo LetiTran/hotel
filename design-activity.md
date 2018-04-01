@@ -59,3 +59,5 @@ Implementation B
 -----------------------------------------------
 
 Revisiting Hotel
+
+- Delete Room class 

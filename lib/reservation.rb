@@ -8,7 +8,7 @@ module Hotel
       @start_date = check_in
       @end_date =  check_out
       @block = block
-      @nigth_rate = @block.nil? ? nigth_rate :@block.discount_rate
+      @nigth_rate = @block.nil? ? nigth_rate : @block.discount_rate
       @cost = calculate_cost
       @room = room
       @status = status? ? :OPEN : :CLOSED

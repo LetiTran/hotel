@@ -117,7 +117,7 @@ describe 'Manager' do
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020')[0].must_equal 2
 
       # Add one more reservation:
-      now = @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
+      one_more_reservation = @manager.add_reservation('3rd Feb 2020','5 Feb 2020')
       # # Assert:
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020' ).must_be_kind_of Array
       @manager.available_rooms('3rd Feb 2020', '5 Feb 2020').length.must_equal 18

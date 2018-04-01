@@ -10,8 +10,6 @@ module Hotel
       @id = id
       @date_range = date_range
       @rooms = rooms
-      # @available_rooms = rooms
-      # @reserved_rooms = []
       @discount_rate = discount_rate
     end
 
