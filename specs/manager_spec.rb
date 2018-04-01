@@ -4,7 +4,6 @@ describe 'Manager' do
   describe '#initialize' do
     before do
       @manager = Hotel::Manager.new
-      @room = Hotel::Room.new(1)
     end
     it "can be created" do
       @manager.must_be_kind_of Hotel::Manager
@@ -50,7 +49,7 @@ describe 'Manager' do
       @manager.all_reservations[0].must_equal @new_reservation
     end
 
-# TODO: maybe check that the room is marked as not available here?
+    # TODO: maybe check that the room is marked as not available here?
     # it 'adds the new reservation to the room list' do
     #   @new_reservation.room.ocupied_on.length.must_be :>, 0
     #   @new_reservation.room.ocupied_on[0].must_be_kind_of Date

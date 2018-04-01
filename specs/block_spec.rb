@@ -11,7 +11,6 @@ describe 'Block' do
 
     it "can be created" do
       @block.must_be_kind_of Hotel::Block
-      # @manager.blocks[0].must_be_kind_of Hotel::Block
     end
 
     it 'has an id' do
@@ -34,7 +33,7 @@ describe 'Block' do
     it 'has a collection of rooms' do
       @block.must_respond_to :rooms
       @block.rooms.must_be_kind_of Array
-      @block.rooms[0].must_be_kind_of Hotel::Room
+      @block.rooms[0].must_be_kind_of Integer
     end
 
     it 'has max 5 rooms' do
@@ -52,20 +51,20 @@ describe 'Block' do
     end
   end
 
-  describe 'available_rooms' do
-    it 'returns an array with the avaivlable rooms' do
-      #Create new block:
-      manager = Hotel::Manager.new
-      block = manager.create_block('3 Feb 2020', '5 Feb 2020',[1,2,3],  150)
-
-      # Assertion 1:
-      block.available_rooms.length.must_equal 3
-      block.available_rooms.must_be_kind_of Array
-
-      # Reserve a room of this block:
-      manager.reserve_room_in_block(1, room: 2)
-      # Assertion 2:
-      block.available_rooms.length.must_equal 2
-    end
-  end
+  # describe 'available_rooms' do
+  #   it 'returns an array with the avaivlable rooms' do
+  #     #Create new block:
+  #     manager = Hotel::Manager.new
+  #     block = manager.create_block('3 Feb 2020', '5 Feb 2020',[1,2,3],  150)
+  #
+  #     # Assertion 1:
+  #     block.available_rooms.length.must_equal 3
+  #     block.available_rooms.must_be_kind_of Array
+  #
+  #     # Reserve a room of this block:
+  #     manager.reserve_room_in_block(1, room: 2)
+  #     # Assertion 2:
+  #     block.available_rooms.length.must_equal 2
+  #   end
+  # end
 end

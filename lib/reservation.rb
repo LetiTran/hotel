@@ -24,7 +24,7 @@ module Hotel
 
     def status?
       # Not requirement, but could be used in future.
-      true if end_date > Date.new(2018,3,5)
+      true if end_date > Date.today
     end
   end
 end

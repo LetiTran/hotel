@@ -3,7 +3,7 @@ require_relative 'spec_helper'
 describe 'Reservation' do
   describe 'initialize' do
     before do
-      @room = Hotel::Room.new(1)
+      @room = 1
       @manager = Hotel::Manager.new
       @reservation = Hotel::Reservation.new({reservation_id: 1, check_in: Date.parse('3rd Feb 2019'), check_out: Date.parse('5 Feb 2019'), room: @room, nigth_rate: 200})
     end
@@ -25,7 +25,7 @@ describe 'Reservation' do
 
     it 'has a room' do
       @reservation.must_respond_to :room
-      @reservation.room.must_be_kind_of Hotel::Room
+      @reservation.room.must_be_kind_of Integer
     end
 
     it 'has start and end dates' do
@@ -53,12 +53,11 @@ describe 'Reservation' do
       reservation2 = Hotel::Reservation.new({reservation_id: 1, check_in: Date.parse('3rd Feb 2018'), check_out: Date.parse('5 Feb 2018'), room: @room, nigth_rate: 200})
       reservation2.status.must_equal :CLOSED
     end
-
   end
 
   describe '#num_of_nights' do
     it 'calculates the number of nights' do
-      @room = Hotel::Room.new(1)
+      room = 1
       reservation = Hotel::Reservation.new({reservation_id: 1, check_in: Date.parse('3rd Feb 2019'), check_out: Date.parse('5 Feb 2019'), room: @room, nigth_rate: 200})
       reservation.num_of_nights.must_equal 2
       reservation.num_of_nights.must_be_kind_of Integer
@@ -67,7 +66,7 @@ describe 'Reservation' do
 
   describe '#calculate_cost' do
     it 'calculates the cost of the stay' do
-      @room = Hotel::Room.new(1)
+      room = 1
       reservation = Hotel::Reservation.new({reservation_id: 1, check_in: Date.parse('3rd Feb 2019'), check_out: Date.parse('5 Feb 2019'), room: @room, nigth_rate: 200})
       reservation.calculate_cost.must_equal 2 * 200
       reservation.calculate_cost.must_be_kind_of Integer

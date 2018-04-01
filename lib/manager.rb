@@ -6,61 +6,25 @@ module Hotel
     def initialize
       @all_rooms = (1..20).to_a
       @nigth_rate = 200
-      @ocupied_on = {}
-
       @all_reservations = Array.new()
-      @nigth_rate = 200
       @blocks = Array.new()
     end
 
     #______________Reports_for_management:
 
-    def available_rooms(date1, date2, block_id = "")
+    def available_rooms(date1, date2)
       # Validate inputs:
       validate_date_input(date1, date2)
 
-      if block_id == ""
-        # Return only available rooms:
-        available_rooms = all_rooms
-        date_requested_range = get_date_range(date1, date2)
+      # Return only available rooms:
+      available_rooms = all_rooms
+      date_requested_range = get_date_range(date1, date2)
 
-
-
-        # TODO: DRY
-        date_requested_range.each do |date|
-          # available_rooms.delete_if {|room| reservation.room == room && ocupied_on.include?(date) }
-          available_rooms.each do |room|
-            all_reservations.each do |reservation|
-              if reservation.room == room
-                if  get_date_range(reservation.start_date, reservation.end_date).include?(date)
-                  available_rooms.delete(room)
-                end
-              end
-            end
-          end
-        end
-
-        # TODO: need this?
-      else
-        block = find_block(block_id)
-        available_rooms = block.rooms
-        date_requested_range = get_date_range(date1, date2)
-
-        date_requested_range.each do |date|
-          # available_rooms.delete_if {|room| reservation.room == room && ocupied_on.include?(date) }
-          available_rooms.each do |room|
-            all_reservations.each do |reservation|
-              if reservation.room == room
-                if  get_date_range(reservation.start_date, reservation.end_date).include?(date)
-                  available_rooms.delete(room)
-                end
-              end
-            end
-          end
-
+      date_requested_range.each do |date|
+        available_rooms.each do |room|
+          all_reservations.each {|reservation| available_rooms.delete(room) if get_date_range(reservation.start_date, reservation.end_date).include?(date) && reservation.room == room}
         end
       end
-
 
       return available_rooms
     end
@@ -78,6 +42,7 @@ module Hotel
 
         date_reservations << reservation if reservation_date_range.include?(Date.parse(reuqested_date))
       end
+
       return date_reservations
     end
 
@@ -178,7 +143,7 @@ module Hotel
 
       # Create new block:
       new_block = Block.new(block_data)
-      blocks << Block.new(block_data)
+      blocks << new_block
 
       return new_block
     end
